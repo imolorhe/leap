@@ -1,0 +1,3 @@
+rootProject.name = 'leap'
+
+include ':app'
