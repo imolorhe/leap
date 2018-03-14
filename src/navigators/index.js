@@ -4,23 +4,25 @@ import { TabNavigator, StackNavigator } from 'react-navigation';
 import Ionicon from 'react-native-vector-icons/Ionicons';
 
 import AddNewScreen from '../screens/AddNewScreen/AddNewScreen';
-import DisplayScreen from '../screens/DisplayScreen/DisplayScreen';
 import AnimationsScreen from '../screens/AnimationsScreen/AnimationsScreen';
 import ListsScreen from '../screens/ListsScreen/ListsScreen';
+import TasksScreen from '../screens/TasksScreen/TasksScreen';
+import DisplayTaskScreen from '../screens/DisplayTaskScreen/DisplayTaskScreen';
 
 export const MainNavigator = StackNavigator({
-  MainList: {
-    screen: ListsScreen,
-    navigationOptions: {
-      header: null
-    }
+  ListsScreen: {
+    screen: ListsScreen
+  },
+  TasksScreen: {
+    screen: TasksScreen
+  },
+  DisplayTaskScreen: {
+    screen: DisplayTaskScreen
   }
 }, {
-  initialRouteName: 'MainList',
+  initialRouteName: 'ListsScreen',
   navigationOptions: {
-    headerStyle: {
-      backgroundColor: 'white'
-    }
+    header: null
   }
 });
 export const oldMainNavigator = TabNavigator({
@@ -43,19 +45,6 @@ export const oldMainNavigator = TabNavigator({
       tabBarIcon: ({ tintColor, focused }) => (
         <Ionicon
           name={focused ? 'ios-add' : 'ios-add-circle-outline'}
-          size={26}
-          style={{ color: tintColor }}
-        />
-      )
-    }
-  },
-  DisplayScreen: {
-    screen: DisplayScreen,
-    navigationOptions: {
-      tabBarLabel: 'List',
-      tabBarIcon: ({ tintColor, focused }) => (
-        <Ionicon
-          name={focused ? 'ios-list' : 'ios-list-box-outline'}
           size={26}
           style={{ color: tintColor }}
         />

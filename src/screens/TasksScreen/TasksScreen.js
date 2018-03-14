@@ -5,6 +5,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { getInitialTaskState } from '../../redux';
 import { addTask } from '../../redux/actions';
+import { getList } from '../../redux/selectors';
 
 import NewItemInput from '../../components/NewItemInput';
 
@@ -18,35 +19,49 @@ const EmptyTasks = () => (
 );
 
 const TaskItem = props => (
-  <View style={styles.listItem}>
-    <TouchableOpacity>
+  <TouchableOpacity onPress={props.onPress}>
+    <View style={styles.listItem}>
       <Text style={styles.listItemText}>{props.data.title}</Text>
-    </TouchableOpacity>
-  </View>
+    </View>
+  </TouchableOpacity>
 );
 
 class TasksScreen extends Component {
-  state = {
-    showNewItemInput: false
-  };
+  state = {};
+
+  constructor(props) {
+    super(props);
+
+    // Get the list matching the ID passed to the route
+    this.listId = this.props.navigation.state.params.listId;
+    this.list = getList(this.props, this.listId);
+  }
 
   addNewTask = text => {
     const task = { ...getInitialTaskState(), title: text };
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    this.props.addTask({ task });
+    this.props.addTask({ task, list_id: this.listId });
   };
 
   toggleNewItemInput = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({ showNewItemInput: !this.state.showNewItemInput });
   };
+
+  goToTask = taskId => () => this.props.navigation.navigate('DisplayTaskScreen', { taskId, listId: this.listId });
+  goBack = () => this.props.navigation.goBack();
   render() {
-    const { newItemInput } = this.state;
+
     return (
       <SafeAreaView style={styles.container}>
         <View>
           <View style={styles.header}>
-            <Text style={{ fontSize: 30 }}>Tasks</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <TouchableOpacity onPress={this.goBack}>
+                <FeatherIcon name='arrow-left' size={20} />
+              </TouchableOpacity>
+              <Text style={{ fontSize: 30 }}>{this.list.title}</Text>
+            </View>
             <TouchableOpacity onPress={this.toggleNewItemInput}>
               <FeatherIcon name='plus-square' size={30} />
             </TouchableOpacity>
@@ -58,7 +73,7 @@ class TasksScreen extends Component {
         </View>
         <ScrollView>
           {
-            this.props.lists.length ? this.props.lists.map((list, i) => <TaskItem key={i} data={list} />) : <EmptyTasks />
+            this.list.tasks.length ? this.list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} />) : <EmptyTasks />
           }
         </ScrollView>
       </SafeAreaView>

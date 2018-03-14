@@ -18,11 +18,12 @@ const EmptyList = () => (
 );
 
 const ListItem = props => (
-  <View style={styles.listItem}>
-    <TouchableOpacity>
+  <TouchableOpacity onPress={props.onPress}>
+    <View style={styles.listItem}>
       <Text style={styles.listItemText}>{props.data.title}</Text>
-    </TouchableOpacity>
-  </View>
+      <Text>{props.data.tasks.length} {props.data.tasks.length === 1 ? 'item': 'items'}</Text>
+    </View>
+  </TouchableOpacity>
 );
 
 class ListsScreen extends Component {
@@ -40,8 +41,10 @@ class ListsScreen extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({ showNewItemInput: !this.state.showNewItemInput });
   };
+
+  goToTasks = listId => () => this.props.navigation.navigate('TasksScreen', { listId });
+
   render() {
-    const { newItemInput } = this.state;
     return (
       <SafeAreaView style={styles.container}>
         <View>
@@ -58,7 +61,8 @@ class ListsScreen extends Component {
         </View>
         <ScrollView>
           {
-            this.props.lists.length ? this.props.lists.map((list, i) => <ListItem key={i} data={list} />) : <EmptyList />
+            this.props.lists.length ?
+              this.props.lists.map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} />) : <EmptyList />
           }
         </ScrollView>
       </SafeAreaView>

@@ -15,6 +15,7 @@
     "redux": "^3.7.2",
     "redux-persist": "^5.9.1",
     "redux-saga": "^0.16.0",
+    "reselect": "^3.0.1",
     "uuid": "^3.2.1"
   },
   "devDependencies": {
