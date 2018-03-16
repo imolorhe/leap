@@ -8,9 +8,11 @@ import { generateListId, generateTaskId } from '../utils';
 import {
   ADD_LIST,
   REMOVE_LIST,
+  LIST_CHANGE_TITLE,
 
   ADD_TASK,
   REMOVE_TASK,
+  TASK_CHANGE_TITLE,
 
   GET_API_CALL,
   GET_API_CALL_SUCCESS,
@@ -53,6 +55,16 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
         ...state,
         lists: state.lists.filter(list => list.id !== payload.list_id)
       };
+    case LIST_CHANGE_TITLE:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.title = payload.text;
+          }
+          return list;
+        })
+      };
     case ADD_TASK:
       return {
         ...state,
@@ -69,6 +81,21 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
         lists: state.lists.map(list => {
           if (list.id === payload.list_id) {
             list.tasks = list.tasks.filter(task => task.id !== payload.task_id);
+          }
+          return list;
+        })
+      };
+    case TASK_CHANGE_TITLE:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.tasks = list.tasks.map(task => {
+              if (task.id === payload.task_id) {
+                task.title = payload.text;
+              }
+              return task;
+            })
           }
           return list;
         })

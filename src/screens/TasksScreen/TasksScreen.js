@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { getInitialTaskState } from '../../redux';
-import { addTask } from '../../redux/actions';
+import { addTask, changeListTitle, removeTask } from '../../redux/actions';
 import { getList } from '../../redux/selectors';
 
 import NewItemInput from '../../components/NewItemInput';
@@ -18,13 +18,33 @@ const EmptyTasks = () => (
   </View>
 );
 
-const TaskItem = props => (
-  <TouchableOpacity onPress={props.onPress}>
-    <View style={styles.listItem}>
-      <Text style={styles.listItemText}>{props.data.title}</Text>
-    </View>
-  </TouchableOpacity>
-);
+class TaskItem extends Component {
+  state = {
+    showDelete: false
+  };
+  toggleDelete = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({ showDelete: !this.state.showDelete });
+  }
+  render() {
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity onPress={this.props.onPress} onLongPress={this.toggleDelete}>
+          <View style={styles.listItem}>
+            <Text style={styles.listItemText}>{this.props.data.title}</Text>
+          </View>
+        </TouchableOpacity>
+        { this.state.showDelete && 
+          <TouchableOpacity onPress={this.props.onDeleteTask}>
+            <View style={styles.listItem}>
+              <FeatherIcon name='trash-2' size={20} color='tomato' />
+            </View>
+          </TouchableOpacity>
+        }
+      </View>
+    );
+  }
+}
 
 class TasksScreen extends Component {
   state = {};
@@ -34,7 +54,6 @@ class TasksScreen extends Component {
 
     // Get the list matching the ID passed to the route
     this.listId = this.props.navigation.state.params.listId;
-    this.list = getList(this.props, this.listId);
   }
 
   addNewTask = text => {
@@ -48,10 +67,13 @@ class TasksScreen extends Component {
     this.setState({ showNewItemInput: !this.state.showNewItemInput });
   };
 
+  onChangeListTitle = text => this.props.changeListTitle({ list_id: this.listId, text });
+  deleteTask = taskId => () => this.props.removeTask({ list_id: this.listId, task_id: taskId });
   goToTask = taskId => () => this.props.navigation.navigate('DisplayTaskScreen', { taskId, listId: this.listId });
   goBack = () => this.props.navigation.goBack();
   render() {
 
+    const list = getList(this.props, this.listId);
     return (
       <SafeAreaView style={styles.container}>
         <View>
@@ -60,11 +82,15 @@ class TasksScreen extends Component {
               <TouchableOpacity onPress={this.goBack}>
                 <FeatherIcon name='arrow-left' size={20} />
               </TouchableOpacity>
-              <Text style={{ fontSize: 30 }}>{this.list.title}</Text>
+              <TextInput style={{ fontSize: 30 }}
+                onChangeText={this.onChangeListTitle}
+                value={list.title} />
             </View>
-            <TouchableOpacity onPress={this.toggleNewItemInput}>
-              <FeatherIcon name='plus-square' size={30} />
-            </TouchableOpacity>
+            <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={this.toggleNewItemInput}>
+                <FeatherIcon name='plus-square' size={30} />
+              </TouchableOpacity>
+            </View>
           </View>
           {this.state.showNewItemInput &&
             <NewItemInput
@@ -73,7 +99,7 @@ class TasksScreen extends Component {
         </View>
         <ScrollView>
           {
-            this.list.tasks.length ? this.list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} />) : <EmptyTasks />
+            list.tasks.length ? list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} onDeleteTask={this.deleteTask(task.id)} />) : <EmptyTasks />
           }
         </ScrollView>
       </SafeAreaView>
@@ -82,4 +108,4 @@ class TasksScreen extends Component {
 }
 
 const mapStateToProps = state => state.leap;
-export default connect(mapStateToProps, { addTask })(TasksScreen);
+export default connect(mapStateToProps, { addTask, changeListTitle, removeTask })(TasksScreen);

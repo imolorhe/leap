@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { getInitialListState } from '../../redux';
-import { addList } from '../../redux/actions';
+import { addList, removeList } from '../../redux/actions';
 
 import NewItemInput from '../../components/NewItemInput';
 
@@ -17,14 +17,34 @@ const EmptyList = () => (
   </View>
 );
 
-const ListItem = props => (
-  <TouchableOpacity onPress={props.onPress}>
-    <View style={styles.listItem}>
-      <Text style={styles.listItemText}>{props.data.title}</Text>
-      <Text>{props.data.tasks.length} {props.data.tasks.length === 1 ? 'item': 'items'}</Text>
-    </View>
-  </TouchableOpacity>
-);
+class ListItem extends Component {
+  state = {
+    showDelete: false
+  };
+  toggleDelete = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({ showDelete: !this.state.showDelete });
+  }
+  render() {
+    return (
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <TouchableOpacity onPress={this.props.onPress} onLongPress={this.toggleDelete} style={{ flex: 1 }}>
+          <View style={styles.listItem}>
+            <Text style={styles.listItemText}>{this.props.data.title}</Text>
+            <Text>{this.props.data.tasks.length} {this.props.data.tasks.length === 1 ? 'item': 'items'}</Text>
+          </View>
+        </TouchableOpacity>
+        {this.state.showDelete &&
+          <TouchableOpacity onPress={this.props.onDeleteList}>
+            <View style={styles.listItem}>
+              <FeatherIcon name='trash-2' size={20} color='tomato' />
+            </View>
+          </TouchableOpacity>
+        }
+      </View>
+    );
+  }
+}
 
 class ListsScreen extends Component {
   state = {
@@ -42,6 +62,7 @@ class ListsScreen extends Component {
     this.setState({ showNewItemInput: !this.state.showNewItemInput });
   };
 
+  deleteList = listId => () => this.props.removeList({ list_id: listId });
   goToTasks = listId => () => this.props.navigation.navigate('TasksScreen', { listId });
 
   render() {
@@ -62,7 +83,7 @@ class ListsScreen extends Component {
         <ScrollView>
           {
             this.props.lists.length ?
-              this.props.lists.map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} />) : <EmptyList />
+              this.props.lists.map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} onDeleteList={this.deleteList(list.id)} />) : <EmptyList />
           }
         </ScrollView>
       </SafeAreaView>
@@ -71,4 +92,4 @@ class ListsScreen extends Component {
 }
 
 const mapStateToProps = state => state.leap;
-export default connect(mapStateToProps, { addList })(ListsScreen);
+export default connect(mapStateToProps, { addList, removeList })(ListsScreen);
