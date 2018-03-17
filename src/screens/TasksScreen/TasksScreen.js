@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { getInitialTaskState } from '../../redux';
-import { addTask, changeListTitle, removeTask } from '../../redux/actions';
+import { addTask, changeListTitle, removeTask, completeTask, uncompleteTask } from '../../redux/actions';
 import { getList } from '../../redux/selectors';
 
 import NewItemInput from '../../components/NewItemInput';
@@ -27,20 +27,26 @@ class TaskItem extends Component {
     this.setState({ showDelete: !this.state.showDelete });
   }
   render() {
+    const { data } = this.props;
     return (
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <TouchableOpacity onPress={this.props.onPress} onLongPress={this.toggleDelete}>
-          <View style={styles.listItem}>
-            <Text style={styles.listItemText}>{this.props.data.title}</Text>
-          </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', opacity: this.props.data.completed ? 0.4 : 1 }}>
+        <TouchableOpacity style={{ paddingLeft: 20 }} onPress={this.props.onToggleComplete}>
+          <FeatherIcon name={ data.completed ? 'check-circle' : 'circle' } size={20} />
         </TouchableOpacity>
-        { this.state.showDelete && 
-          <TouchableOpacity onPress={this.props.onDeleteTask}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', flex: 1 }}>
+          <TouchableOpacity onPress={this.props.onPress} onLongPress={this.toggleDelete}>
             <View style={styles.listItem}>
-              <FeatherIcon name='trash-2' size={20} color='tomato' />
+              <Text style={styles.listItemText}>{this.props.data.title}</Text>
             </View>
           </TouchableOpacity>
-        }
+          { this.state.showDelete && 
+            <TouchableOpacity onPress={this.props.onDeleteTask}>
+              <View style={styles.listItem}>
+                <FeatherIcon name='trash-2' size={20} color='tomato' />
+              </View>
+            </TouchableOpacity>
+          }
+        </View>
       </View>
     );
   }
@@ -69,6 +75,15 @@ class TasksScreen extends Component {
 
   onChangeListTitle = text => this.props.changeListTitle({ list_id: this.listId, text });
   deleteTask = taskId => () => this.props.removeTask({ list_id: this.listId, task_id: taskId });
+  toggleCompleteTask = taskId => () => {
+    const list = getList(this.props, this.listId);
+    const task = list.tasks.find(task => task.id === taskId);
+    if (task.completed) {
+      this.props.uncompleteTask({ list_id: this.listId, task_id: taskId });
+    } else {
+      this.props.completeTask({ list_id: this.listId, task_id: taskId });
+    }
+  };
   goToTask = taskId => () => this.props.navigation.navigate('DisplayTaskScreen', { taskId, listId: this.listId });
   goBack = () => this.props.navigation.goBack();
   render() {
@@ -99,7 +114,7 @@ class TasksScreen extends Component {
         </View>
         <ScrollView>
           {
-            list.tasks.length ? list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} onDeleteTask={this.deleteTask(task.id)} />) : <EmptyTasks />
+            list.tasks.length ? list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} onDeleteTask={this.deleteTask(task.id)} onToggleComplete={this.toggleCompleteTask(task.id)} />) : <EmptyTasks />
           }
         </ScrollView>
       </SafeAreaView>
@@ -108,4 +123,4 @@ class TasksScreen extends Component {
 }
 
 const mapStateToProps = state => state.leap;
-export default connect(mapStateToProps, { addTask, changeListTitle, removeTask })(TasksScreen);
+export default connect(mapStateToProps, { addTask, changeListTitle, removeTask, completeTask, uncompleteTask })(TasksScreen);

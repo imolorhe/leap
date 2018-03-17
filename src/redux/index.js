@@ -12,6 +12,8 @@ import {
 
   ADD_TASK,
   REMOVE_TASK,
+  COMPLETE_TASK,
+  UNCOMPLETE_TASK,
   TASK_CHANGE_TITLE,
   TASK_SET_CONTACTS,
   TASK_ADD_IMAGE,
@@ -86,6 +88,36 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
         lists: state.lists.map(list => {
           if (list.id === payload.list_id) {
             list.tasks = list.tasks.filter(task => task.id !== payload.task_id);
+          }
+          return list;
+        })
+      };
+    case COMPLETE_TASK:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.tasks = list.tasks.map(task => {
+              if (task.id === payload.task_id) {
+                task.completed = true;
+              }
+              return task;
+            })
+          }
+          return list;
+        })
+      };
+    case UNCOMPLETE_TASK:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.tasks = list.tasks.map(task => {
+              if (task.id === payload.task_id) {
+                task.completed = false;
+              }
+              return task;
+            })
           }
           return list;
         })
