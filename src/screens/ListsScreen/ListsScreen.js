@@ -48,7 +48,8 @@ class ListItem extends Component {
 
 class ListsScreen extends Component {
   state = {
-    showNewItemInput: false
+    showNewItemInput: false,
+    searchTerm: ''
   };
 
   addNewList = text => {
@@ -61,6 +62,8 @@ class ListsScreen extends Component {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     this.setState({ showNewItemInput: !this.state.showNewItemInput });
   };
+
+  onSetSearchTerm = text => this.setState({ searchTerm: text });
 
   deleteList = listId => () => this.props.removeList({ list_id: listId });
   goToTasks = listId => () => this.props.navigation.navigate('TasksScreen', { listId });
@@ -79,11 +82,20 @@ class ListsScreen extends Component {
             <NewItemInput
             placeholder='Write the name of your new list...'
             onSubmit={this.addNewList} />}
+          <TextInput style={{
+            paddingHorizontal: 20,
+            fontSize: 20,
+            paddingVertical: 10}}
+            value={this.state.searchTerm}
+            onChangeText={this.onSetSearchTerm}
+            placeholder='Search lists...' />
         </View>
         <ScrollView>
           {
             this.props.lists.length ?
-              this.props.lists.map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} onDeleteList={this.deleteList(list.id)} />) : <EmptyList />
+              this.props.lists
+                .filter(list => !this.state.searchTerm || new RegExp(this.state.searchTerm, 'i').test(list.title))
+                .map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} onDeleteList={this.deleteList(list.id)} />) : <EmptyList />
           }
         </ScrollView>
       </SafeAreaView>
