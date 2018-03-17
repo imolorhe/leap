@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, SafeAreaView, Text, ScrollView, TextInput, TouchableOpacity, LayoutAnimation } from 'react-native';
+import { View, SafeAreaView, Text, ScrollView, TextInput, TouchableOpacity, LayoutAnimation, Image } from 'react-native';
 import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import { showImagePicker } from 'react-native-image-picker';
 
-import { getInitialTaskState } from '../../redux';
-import { changeTaskTitle, setTaskContacts } from '../../redux/actions';
+import { getInitialTaskImageState } from '../../redux';
+import { changeTaskTitle, setTaskContacts, addTaskImage, removeTaskImage, setTaskDescription } from '../../redux/actions';
 import { getTask } from '../../redux/selectors';
 
 import NewItemInput from '../../components/NewItemInput';
@@ -19,8 +20,9 @@ const SectionHeader = props => (
 
 class DisplayTaskScreen extends Component {
   state = {
-    showNewItemInput: false,
-    task: null
+    isManagingImages: false,
+    isEditingDescription: false,
+    editedDescription: ''
   };
 
   constructor(props) {
@@ -30,8 +32,50 @@ class DisplayTaskScreen extends Component {
     this.listId = this.props.navigation.state.params.listId;
     this.taskId = this.props.navigation.state.params.taskId;
   }
+  componentDidMount() {
+    const task = getTask(this.props, this.listId, this.taskId);
+    this.setState({ editedDescription: task.description });
+  }
 
   goBack = () => this.props.navigation.goBack();
+  showImagePicker = () => showImagePicker({
+    title: 'Select Avatar',
+    storageOptions: {
+      skipBackup: true,
+      path: 'images'
+    }
+  }, res => {
+    console.tron.log('Response = ', res);
+
+    if (res.didCancel) {
+      console.tron.log('User cancelled image picker');
+    }
+    else if (res.error) {
+      console.tron.log('ImagePicker Error: ', res.error);
+    }
+    else if (res.customButton) {
+      console.tron.log('User tapped custom button: ', res.customButton);
+    }
+    else {
+      let source = { uri: res.uri };
+
+      // You can also display the image using data:
+      // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+
+      this.props.addTaskImage({ task_id: this.taskId, list_id: this.listId, image: { ...getInitialTaskImageState(), source }});
+    }
+  });
+  removeImage = imageId => () => this.props.removeTaskImage({ task_id: this.taskId, list_id: this.listId, image_id: imageId });
+  toggleManageImages = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    this.setState({ isManagingImages: !this.state.isManagingImages });
+  }
+  editDescription = () => this.setState({ isEditingDescription: true });
+  onSetEditedDescription = text => this.setState({ editedDescription: text });
+  saveDescription = () => {
+    this.props.setTaskDescription({ task_id: this.taskId, list_id: this.listId, description: this.state.editedDescription });
+    this.setState({ isEditingDescription: false });
+  }
   showContactModal = () => this.props.navigation.navigate('ContactModal', { onSelectContacts: this.onSelectContacts });
   onSelectContacts = contacts => this.props.setTaskContacts({ task_id: this.taskId, list_id: this.listId, contacts });
   onTaskTitleChange = text => this.props.changeTaskTitle({ task_id: this.taskId, list_id: this.listId, text });
@@ -55,15 +99,47 @@ class DisplayTaskScreen extends Component {
         <ScrollView stickyHeaderIndices={[0, 2, 4]}>
           <SectionHeader>
             <Text style={{ fontSize: 20 }}>Description</Text>
+            {this.state.isEditingDescription ?
+              <TouchableOpacity onPress={this.saveDescription}>
+                <Text>Save</Text>
+              </TouchableOpacity> :
+              <TouchableOpacity onPress={this.editDescription}>
+                <FeatherIcon name='edit' size={20} />
+              </TouchableOpacity>
+            }
           </SectionHeader>
           <View style={{ padding: 20 }}>
-            <Text>Description goes here...</Text>
+            {this.state.isEditingDescription ?
+              <TextInput
+                value={this.state.editedDescription}
+                onChangeText={this.onSetEditedDescription}
+                multiline={true}
+                placeholder='Write the task description...' />
+            : <Text>{task.description}</Text>
+            }
           </View>
           <SectionHeader>
             <Text style={{ fontSize: 20 }}>Images</Text>
+            <TouchableOpacity onPress={this.toggleManageImages}>
+              <FeatherIcon name='more-horizontal' size={20} />
+            </TouchableOpacity>
           </SectionHeader>
-          <View style={{ padding: 20 }}>
-            <Text>Description goes here...</Text>
+          <View style={{ padding: 20, flexDirection: 'row' }}>
+            {task.images.map((image, i) => (
+              <View key={i} style={styles.taskImageContainer}>
+                {this.state.isManagingImages &&
+                  <TouchableOpacity style={{ position: 'absolute', right: 5, top: 5, zIndex: 1 }} onPress={this.removeImage(image.id)}>
+                    <FeatherIcon name='x' size={20} color='white' />
+                  </TouchableOpacity>
+                }
+                <Image source={image.source} style={styles.taskImage} />
+              </View>
+            ))}
+            {this.state.isManagingImages &&
+              <TouchableOpacity style={[styles.taskImageContainer, { backgroundColor: '#f0f0f0', borderRadius: 50 }]} onPress={this.showImagePicker}>
+                <FeatherIcon name='plus' size={50} color='white' />
+              </TouchableOpacity>
+            }
           </View>
           <SectionHeader>
             <Text style={{ fontSize: 20 }}>People</Text>
@@ -85,4 +161,10 @@ class DisplayTaskScreen extends Component {
 }
 
 const mapStateToProps = state => state.leap;
-export default connect(mapStateToProps, { changeTaskTitle, setTaskContacts })(DisplayTaskScreen);
+export default connect(mapStateToProps, {
+  changeTaskTitle,
+  setTaskContacts,
+  addTaskImage,
+  removeTaskImage,
+  setTaskDescription
+})(DisplayTaskScreen);

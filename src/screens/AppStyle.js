@@ -20,5 +20,16 @@ export default styles = StyleSheet.create({
   },
   listItemText: {
     fontSize: 20
+  },
+  taskImageContainer: {
+    width: 90,
+    height: 90,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  taskImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10
   }
 });

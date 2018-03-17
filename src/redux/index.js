@@ -3,7 +3,7 @@ import { combineReducers } from 'redux';
 import rootSaga from '../saga';
 import configureStore from './configureStore';
 
-import { generateListId, generateTaskId } from '../utils';
+import { generateListId, generateTaskId, generateTaskImageId } from '../utils';
 
 import {
   ADD_LIST,
@@ -14,6 +14,9 @@ import {
   REMOVE_TASK,
   TASK_CHANGE_TITLE,
   TASK_SET_CONTACTS,
+  TASK_ADD_IMAGE,
+  TASK_REMOVE_IMAGE,
+  TASK_SET_DESCRIPTION,
 
   GET_API_CALL,
   GET_API_CALL_SUCCESS,
@@ -25,7 +28,7 @@ export const INITIAL_TASK_STATE = {
   title: '',
   description: '',
   completed: false,
-  imageUrls: [],
+  images: [],
   people: []
 };
 export const INITIAL_LIST_STATE = {
@@ -40,8 +43,9 @@ export const INITIAL_STATE = {
   lists: []
 };
 
-export const getInitialListState = () => ({...INITIAL_LIST_STATE, id: generateListId() });
+export const getInitialListState = () => ({ ...INITIAL_LIST_STATE, id: generateListId() });
 export const getInitialTaskState = () => ({ ...INITIAL_TASK_STATE, id: generateTaskId() });
+export const getInitialTaskImageState = () => ({  id: generateTaskImageId() });
 
 export const leapReducer = (state = INITIAL_STATE, action) => {
   const payload = action.payload;
@@ -109,6 +113,51 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
             list.tasks = list.tasks.map(task => {
               if (task.id === payload.task_id) {
                 task.people = payload.contacts;
+              }
+              return task;
+            })
+          }
+          return list;
+        })
+      };
+    case TASK_ADD_IMAGE:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.tasks = list.tasks.map(task => {
+              if (task.id === payload.task_id) {
+                task.images = [...task.images, payload.image ];
+              }
+              return task;
+            })
+          }
+          return list;
+        })
+      };
+    case TASK_REMOVE_IMAGE:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.tasks = list.tasks.map(task => {
+              if (task.id === payload.task_id) {
+                task.images = task.images.filter(image => image.id !== payload.image_id);
+              }
+              return task;
+            })
+          }
+          return list;
+        })
+      };
+    case TASK_SET_DESCRIPTION:
+      return {
+        ...state,
+        lists: state.lists.map(list => {
+          if (list.id === payload.list_id) {
+            list.tasks = list.tasks.map(task => {
+              if (task.id === payload.task_id) {
+                task.description = payload.description;
               }
               return task;
             })
