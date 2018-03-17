@@ -8,6 +8,7 @@ import AnimationsScreen from '../screens/AnimationsScreen/AnimationsScreen';
 import ListsScreen from '../screens/ListsScreen/ListsScreen';
 import TasksScreen from '../screens/TasksScreen/TasksScreen';
 import DisplayTaskScreen from '../screens/DisplayTaskScreen/DisplayTaskScreen';
+import ContactModal from '../components/ContactModal';
 
 export const MainNavigator = StackNavigator({
   ListsScreen: {
@@ -18,6 +19,13 @@ export const MainNavigator = StackNavigator({
   },
   DisplayTaskScreen: {
     screen: DisplayTaskScreen
+  },
+  ContactModal: {
+    screen: ContactModal,
+    navigationOptions: {
+      headerMode: 'none',
+      mode: 'modal'
+    }
   }
 }, {
   initialRouteName: 'ListsScreen',

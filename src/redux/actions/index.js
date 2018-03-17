@@ -8,6 +8,7 @@ export const LIST_CHANGE_TITLE = 'LIST_CHANGE_TITLE';
 export const ADD_TASK = 'ADD_TASK';
 export const REMOVE_TASK = 'REMOVE_TASK';
 export const TASK_CHANGE_TITLE = 'TASK_CHANGE_TITLE';
+export const TASK_SET_CONTACTS = 'TASK_SET_CONTACTS';
 
 export const GET_API_CALL = 'GET_API_CALL';
 export const GET_API_CALL_SUCCESS = 'GET_API_CALL_SUCCESS';
@@ -25,5 +26,6 @@ export const changeListTitle = createAction(LIST_CHANGE_TITLE);
 export const addTask = createAction(ADD_TASK);
 export const removeTask = createAction(REMOVE_TASK);
 export const changeTaskTitle = createAction(TASK_CHANGE_TITLE);
+export const setTaskContacts = createAction(TASK_SET_CONTACTS);
 
 export const getApiCall = createAction(GET_API_CALL);
