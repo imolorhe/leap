@@ -52,6 +52,7 @@
 		D0F8522345054E7F817CF93F /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3ED1209E7FE446A9878CBB5B /* Entypo.ttf */; };
 		D7FF29F62E4C4E9990CD8CAD /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 13991796BB1A47F3A02A3382 /* Foundation.ttf */; };
 		E1FB20B1C91E411AAE2F0743 /* libRCTContacts.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1166F670AD9C4EFF9C106393 /* libRCTContacts.a */; };
+		F00DE78E206441D300DC3350 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F00DE78D206441D300DC3350 /* GoogleService-Info.plist */; };
 		F06B1BFE5377461CB8F9D577 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 28321CB2E5C74033A9371CEC /* libRNVectorIcons.a */; };
 		F104111F9FEA42F09B28FA77 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 522C91088B2444E6A13399A8 /* MaterialCommunityIcons.ttf */; };
 		F47CE2836CEE405A8944CFDE /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DAC9535985A4E89B608B07D /* libRNFirebase.a */; };
@@ -415,6 +416,7 @@
 		DEE7761628E84E209D2884E9 /* RCTContacts.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTContacts.xcodeproj; path = "../node_modules/react-native-contacts/ios/RCTContacts.xcodeproj"; sourceTree = "<group>"; };
 		E16C6D913E1437CCCB3B15FB /* Pods-leap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-leap/Pods-leap.debug.xcconfig"; sourceTree = "<group>"; };
 		E33F44FD7C0A46AAA13312A4 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
+		F00DE78D206441D300DC3350 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "leap/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		F2216CE342F6F5E71045BCC5 /* Pods-leap-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-leap-tvOSTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-leap-tvOSTests/Pods-leap-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -561,6 +563,7 @@
 		13B07FAE1A68108700A75B9A /* leap */ = {
 			isa = PBXGroup;
 			children = (
+				F00DE78D206441D300DC3350 /* GoogleService-Info.plist */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -1277,6 +1280,7 @@
 				1750AA89144D4A3C8A5CD619 /* Octicons.ttf in Resources */,
 				BF805BD1D0E24F79810D8694 /* SimpleLineIcons.ttf in Resources */,
 				141AF8BF7B2B45A7B990D3FE /* Zocial.ttf in Resources */,
+				F00DE78E206441D300DC3350 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1562,6 +1566,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
@@ -1594,6 +1599,7 @@
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
+					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
@@ -1828,6 +1834,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
+				"OTHER_LDFLAGS[arch=*]" = "$(inherited)";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1862,6 +1870,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "$(inherited)";
+				"OTHER_LDFLAGS[arch=*]" = "$(inherited)";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
