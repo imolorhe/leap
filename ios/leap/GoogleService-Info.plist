@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>807194883827-9oh89c488gds6afhfo41815bad8si3ib.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.807194883827-9oh89c488gds6afhfo41815bad8si3ib</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBC8tji3ar8AHXmxX04iYTq_v19v0LjT1s</string>
+	<key>GCM_SENDER_ID</key>
+	<string>807194883827</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.leap</string>
+	<key>PROJECT_ID</key>
+	<string>leap-3d69e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>leap-3d69e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:807194883827:ios:2aa7603550df5ef2</string>
+	<key>DATABASE_URL</key>
+	<string>https://leap-3d69e.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "807194883827",
+    "firebase_url": "https://leap-3d69e.firebaseio.com",
+    "project_id": "leap-3d69e",
+    "storage_bucket": "leap-3d69e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:807194883827:android:64739b24f7e991aa",
+        "android_client_info": {
+          "package_name": "com.leap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "807194883827-6bu716m68n3i7r23sddufhe8rh6rr584.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.leap",
+            "certificate_hash": "b87fe255bbc2508dbb95be1fd5c5243fe91416c7"
+          }
+        },
+        {
+          "client_id": "807194883827-motb2hjr2ck0v8po2rnihugi0kgr5l9e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBXi9-AJlOthWIa7Q0TLIm8X-cdDilq0IM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "807194883827-motb2hjr2ck0v8po2rnihugi0kgr5l9e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
