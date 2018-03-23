@@ -19,6 +19,16 @@ export const GET_API_CALL = 'GET_API_CALL';
 export const GET_API_CALL_SUCCESS = 'GET_API_CALL_SUCCESS';
 export const GET_API_CALL_FAILURE = 'GET_API_CALL_FAILURE';
 
+export const AUTH_CHECK_AUTH = 'AUTH_CHECK_AUTH';
+export const AUTH_CHECK_AUTH_SUCCESS = 'AUTH_CHECK_AUTH_SUCCESS';
+export const AUTH_CHECK_AUTH_FAILURE = 'AUTH_CHECK_AUTH_FAILURE';
+
+export const AUTH_LOGIN = 'AUTH_LOGIN';
+export const AUTH_LOGOUT = 'AUTH_LOGOUT';
+export const AUTH_CREATE_ACCOUNT = 'AUTH_CREATE_ACCOUNT';
+
+export const NAVIGATE_TO_CONTENT = 'NAVIGATE_TO_CONTENT';
+
 export const createAction = type => payload => ({ type, payload });
 
 export const addElement = createAction(ADD_ELEMENT);
@@ -39,3 +49,10 @@ export const removeTaskImage = createAction(TASK_REMOVE_IMAGE);
 export const setTaskDescription = createAction(TASK_SET_DESCRIPTION);
 
 export const getApiCall = createAction(GET_API_CALL);
+
+export const checkAuth = createAction(AUTH_CHECK_AUTH);
+export const loginUser = createAction(AUTH_LOGIN);
+export const logoutUser = createAction(AUTH_LOGOUT);
+export const createAccount = createAction(AUTH_CREATE_ACCOUNT);
+
+export const goToContent = createAction(NAVIGATE_TO_CONTENT);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { getInitialListState } from '../../redux';
-import { addList, removeList } from '../../redux/actions';
+import { addList, removeList, logoutUser } from '../../redux/actions';
 
 import NewItemInput from '../../components/NewItemInput';
 
@@ -68,6 +68,8 @@ class ListsScreen extends Component {
   deleteList = listId => () => this.props.removeList({ list_id: listId });
   goToTasks = listId => () => this.props.navigation.navigate('TasksScreen', { listId });
 
+  onLogout = () => this.props.logoutUser();
+
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -90,18 +92,25 @@ class ListsScreen extends Component {
             onChangeText={this.onSetSearchTerm}
             placeholder='Search lists...' />
         </View>
-        <ScrollView>
-          {
-            this.props.lists.length ?
-              this.props.lists
-                .filter(list => !this.state.searchTerm || new RegExp(this.state.searchTerm, 'i').test(list.title))
-                .map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} onDeleteList={this.deleteList(list.id)} />) : <EmptyList />
-          }
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+          <ScrollView >
+            {
+              this.props.lists.length ?
+                this.props.lists
+                  .filter(list => !this.state.searchTerm || new RegExp(this.state.searchTerm, 'i').test(list.title))
+                  .map(list => <ListItem key={list.id} data={list} onPress={this.goToTasks(list.id)} onDeleteList={this.deleteList(list.id)} />) : <EmptyList />
+            }
+          </ScrollView>
+        </View>
+        <View style={{ padding: 10, width: '100%', alignItems: 'center' }}>
+          <TouchableOpacity style={{ backgroundColor: 'tomato', padding: 10, borderRadius: 5, width: '100%' }} onPress={this.onLogout}>
+            <Text style={{ color: 'white', textAlign: 'center' }}>Logout</Text>
+          </TouchableOpacity>
+        </View>
       </SafeAreaView>
     );
   }
 }
 
 const mapStateToProps = state => state.leap;
-export default connect(mapStateToProps, { addList, removeList })(ListsScreen);
+export default connect(mapStateToProps, { addList, removeList, logoutUser })(ListsScreen);

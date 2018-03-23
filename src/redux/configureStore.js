@@ -4,6 +4,13 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { composeWithDevTools } from 'remote-redux-devtools';
 import Reactotron from 'reactotron-react-native';
+import {
+  addNavigationHelpers,
+} from 'react-navigation';
+import {
+  createReduxBoundAddListener,
+  createReactNavigationReduxMiddleware,
+} from 'react-navigation-redux-helpers';
 
 
 const persistConfig = {
@@ -19,6 +26,21 @@ export default (rootReducer, rootSaga) => {
   const sagaMonitor = Reactotron.createSagaMonitor();
   const sagaMiddleware = createSagaMiddleware({ sagaMonitor });
 
+  // Note: createReactNavigationReduxMiddleware must be run before createReduxBoundAddListener
+  const reactNavigationMiddleware = createReactNavigationReduxMiddleware(
+    'root',
+    state => state.nav,
+  );
+  const addListener = createReduxBoundAddListener('root');
+
+  middlewares.push(reactNavigationMiddleware);
+
+  const getNavigationProp = (dispatch, navState) => addNavigationHelpers({
+    dispatch,
+    state: navState,
+    addListener,
+  });
+
   middlewares.push(sagaMiddleware);
 
   if(__DEV__) {
@@ -33,5 +55,5 @@ export default (rootReducer, rootSaga) => {
 
   sagaMiddleware.run(rootSaga);
 
-  return { store, persistor };
+  return { store, persistor, getNavigationProp };
 };
