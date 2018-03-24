@@ -5,6 +5,10 @@ export * from './task';
 export const ADD_ELEMENT = 'ADD_ELEMENT';
 export const REMOVE_ELEMENT = 'REMOVE_ELEMENT';
 
+export const FETCH_USER_LISTS = 'FETCH_USER_LISTS';
+export const FETCH_USER_LISTS_SUCCESS = 'FETCH_USER_LISTS_SUCCESS';
+export const FETCH_USER_LISTS_FAILURE = 'FETCH_USER_LISTS_FAILURE';
+
 export const ADD_LIST = 'ADD_LIST';
 export const REMOVE_LIST = 'REMOVE_LIST';
 export const LIST_CHANGE_TITLE = 'LIST_CHANGE_TITLE';
@@ -30,10 +34,11 @@ export const REMOTE_GET_LIST_FAILURE = 'REMOTE_GET_LIST_FAILURE';
 export const addElement = createAction(ADD_ELEMENT);
 export const removeElement = createAction(REMOVE_ELEMENT);
 
+export const fetchUserLists = createAction(FETCH_USER_LISTS);
+
 export const addList = createAction(ADD_LIST);
 export const removeList = createAction(REMOVE_LIST);
 export const changeListTitle = createAction(LIST_CHANGE_TITLE);
-
 
 export const getApiCall = createAction(GET_API_CALL);
 

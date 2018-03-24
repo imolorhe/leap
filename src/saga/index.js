@@ -72,6 +72,21 @@ export function* logoutUser() {
   }
 }
 
+export function* fetchUserLists() {
+  try {
+    const uid = firebase.auth().currentUser.uid;
+    const snapshot = yield firebase.database().ref().child(`/user-lists/${uid}`).once('value');
+
+    const lists = Object.values(snapshot.val());
+    console.tron.log(JSON.stringify(lists));
+
+    yield put({ type: leapActions.FETCH_USER_LISTS_SUCCESS, payload: { lists } });
+  } catch (err) {
+    console.tron.error('Fetch remote list Error: ' + JSON.stringify(err.message));
+    yield put({ type: leapActions.FETCH_USER_LISTS_FAILURE })
+  }
+}
+
 export function* addList(action) {
   try {
     const uid = firebase.auth().currentUser.uid;
@@ -154,5 +169,6 @@ export default function* root() {
       ...Object.values(leapTaskActions)
     ], updateList),
     takeLatest(leapActions.REMOTE_GET_LIST, fetchRemoteList),
+    takeLatest(leapActions.FETCH_USER_LISTS, fetchUserLists),
   ]);
 }

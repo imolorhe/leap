@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, SafeAreaView, Text, ScrollView, TextInput, TouchableOpacity, LayoutAnimation } from 'react-native';
+import { View, SafeAreaView, Text, ScrollView, TextInput, TouchableOpacity, LayoutAnimation, Share } from 'react-native';
 import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
@@ -102,6 +102,8 @@ class TasksScreen extends Component {
   };
   goToTask = taskId => () => this.props.navigation.navigate('DisplayTaskScreen', { taskId, listId: this.listId, ...this.props.navigation.state.params });
   goBack = () => this.props.navigation.goBack();
+
+  shareList = () => Share.share({ message: `leap://leap/list/${this.listId}` });
   render() {
 
     const list = this.isRemote ? selectRemoteList(this.props.state, this.listId) : getList(this.props.state, this.listId);
@@ -118,6 +120,9 @@ class TasksScreen extends Component {
                 value={list && list.title} />
             </View>
             <View style={{ flexDirection: 'row' }}>
+              <TouchableOpacity onPress={this.shareList} style={{ marginRight: 5 }}>
+                <FeatherIcon name='share' size={30} />
+              </TouchableOpacity>
               <TouchableOpacity onPress={this.toggleNewItemInput}>
                 <FeatherIcon name='plus-square' size={30} />
               </TouchableOpacity>
@@ -128,11 +133,13 @@ class TasksScreen extends Component {
               placeholder='Write the name of your new task...'
               onSubmit={this.addNewTask} />}
         </View>
-        <ScrollView>
-          {
-            list && list.tasks.length ? list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} onDeleteTask={this.deleteTask(task.id)} onToggleComplete={this.toggleCompleteTask(task.id)} />) : <EmptyTasks />
-          }
-        </ScrollView>
+        <View style={{ flex: 1 }}>
+          <ScrollView>
+            {
+              list && list.tasks && list.tasks.length ? list.tasks.map((task, i) => <TaskItem key={i} data={task} onPress={this.goToTask(task.id)} onDeleteTask={this.deleteTask(task.id)} onToggleComplete={this.toggleCompleteTask(task.id)} />) : <EmptyTasks />
+            }
+          </ScrollView>
+        </View>
       </SafeAreaView>
     );
   }

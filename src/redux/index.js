@@ -9,6 +9,10 @@ import {  remoteListReducer} from './reducers/remote';
 import { generateListId, generateTaskId, generateTaskImageId } from '../utils';
 
 import {
+  FETCH_USER_LISTS,
+  FETCH_USER_LISTS_SUCCESS,
+  FETCH_USER_LISTS_FAILURE,
+
   ADD_LIST,
   REMOVE_LIST,
   LIST_CHANGE_TITLE,
@@ -22,10 +26,6 @@ import {
   TASK_ADD_IMAGE,
   TASK_REMOVE_IMAGE,
   TASK_SET_DESCRIPTION,
-
-  GET_API_CALL,
-  GET_API_CALL_SUCCESS,
-  GET_API_CALL_FAILURE
 } from './actions';
 
 export const INITIAL_TASK_STATE = {
@@ -42,9 +42,7 @@ export const INITIAL_LIST_STATE = {
   tasks: []
 };
 export const INITIAL_STATE = {
-  posts: [],
-  postCount: 0,
-
+  loading: false,
   lists: []
 };
 
@@ -200,11 +198,21 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
           return list;
         })
       };
-    case GET_API_CALL_SUCCESS:
+    case FETCH_USER_LISTS:
       return {
         ...state,
-        posts: action.payload,
-        postCount: action.payload.length
+        loading: true
+      };
+    case FETCH_USER_LISTS_FAILURE:
+      return {
+        ...state,
+        loading: false
+      };
+    case FETCH_USER_LISTS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        lists: payload.lists
       };
     default:
       return state;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import { getInitialListState } from '../../redux';
-import { addList, removeList, logoutUser } from '../../redux/actions';
+import { addList, removeList, logoutUser, fetchUserLists } from '../../redux/actions';
 
 import NewItemInput from '../../components/NewItemInput';
 
@@ -31,7 +31,7 @@ class ListItem extends Component {
         <TouchableOpacity onPress={this.props.onPress} onLongPress={this.toggleDelete} style={{ flex: 1 }}>
           <View style={styles.listItem}>
             <Text style={styles.listItemText}>{this.props.data.title}</Text>
-            <Text>{this.props.data.tasks.length} {this.props.data.tasks.length === 1 ? 'item': 'items'}</Text>
+            <Text>{this.props.data.tasks ? this.props.data.tasks.length : 0} {this.props.data.tasks && this.props.data.tasks.length === 1 ? 'item': 'items'}</Text>
           </View>
         </TouchableOpacity>
         {this.state.showDelete &&
@@ -51,6 +51,12 @@ class ListsScreen extends Component {
     showNewItemInput: false,
     searchTerm: ''
   };
+
+  constructor(props) {
+    super(props);
+
+    this.props.fetchUserLists();
+  }
 
   addNewList = text => {
     const list = { ...getInitialListState(), title: text };
@@ -113,4 +119,4 @@ class ListsScreen extends Component {
 }
 
 const mapStateToProps = state => state.leap;
-export default connect(mapStateToProps, { addList, removeList, logoutUser })(ListsScreen);
+export default connect(mapStateToProps, { addList, removeList, logoutUser, fetchUserLists })(ListsScreen);
