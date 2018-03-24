@@ -76,7 +76,7 @@ class TasksScreen extends Component {
   onChangeListTitle = text => this.props.changeListTitle({ list_id: this.listId, text });
   deleteTask = taskId => () => this.props.removeTask({ list_id: this.listId, task_id: taskId });
   toggleCompleteTask = taskId => () => {
-    const list = getList(this.props, this.listId);
+    const list = getList(this.props.state, this.listId);
     const task = list.tasks.find(task => task.id === taskId);
     if (task.completed) {
       this.props.uncompleteTask({ list_id: this.listId, task_id: taskId });
@@ -88,7 +88,7 @@ class TasksScreen extends Component {
   goBack = () => this.props.navigation.goBack();
   render() {
 
-    const list = getList(this.props, this.listId);
+    const list = getList(this.props.state, this.listId);
     return (
       <SafeAreaView style={styles.container}>
         <View>
@@ -122,5 +122,5 @@ class TasksScreen extends Component {
   }
 }
 
-const mapStateToProps = state => state.leap;
+const mapStateToProps = state => ({ state });
 export default connect(mapStateToProps, { addTask, changeListTitle, removeTask, completeTask, uncompleteTask })(TasksScreen);

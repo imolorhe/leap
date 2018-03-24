@@ -33,7 +33,7 @@ class DisplayTaskScreen extends Component {
     this.taskId = this.props.navigation.state.params.taskId;
   }
   componentDidMount() {
-    const task = getTask(this.props, this.listId, this.taskId);
+    const task = getTask(this.props.state, this.listId, this.taskId);
     this.setState({ editedDescription: task.description });
   }
 
@@ -81,7 +81,7 @@ class DisplayTaskScreen extends Component {
   onTaskTitleChange = text => this.props.changeTaskTitle({ task_id: this.taskId, list_id: this.listId, text });
   render() {
 
-    const task = getTask(this.props, this.listId, this.taskId);
+    const task = getTask(this.props.state, this.listId, this.taskId);
     return (
       <SafeAreaView style={styles.container}>
         <View>
@@ -160,7 +160,7 @@ class DisplayTaskScreen extends Component {
   }
 }
 
-const mapStateToProps = state => state.leap;
+const mapStateToProps = state => ({ state });
 export default connect(mapStateToProps, {
   changeTaskTitle,
   setTaskContacts,

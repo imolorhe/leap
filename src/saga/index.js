@@ -1,6 +1,8 @@
-import { all, takeLatest, put, call } from 'redux-saga/effects';
+import { all, takeLatest, put, call, takeEvery, select } from 'redux-saga/effects';
 import firebase from 'react-native-firebase';
 import * as leapActions from '../redux/actions';
+import * as leapTaskActions from '../redux/actions/task';
+import { getList } from '../redux/selectors';
 
 export function* leapApiCall() {
   try {
@@ -70,6 +72,61 @@ export function* logoutUser() {
   }
 }
 
+export function* addList(action) {
+  try {
+    const uid = firebase.auth().currentUser.uid;
+    const newListKey = firebase.database().ref().child('lists').push().key;
+
+    const updates = {};
+    updates['/lists/' + newListKey] = action.payload.list;
+    updates['/user-lists/' + uid + '/' + newListKey] = action.payload.list;
+
+    firebase.database().ref().update(updates);
+
+  } catch (err) {
+    console.tron.log('Error: ' + JSON.stringify(err.message));
+  }
+}
+
+export function* deleteList(action) {
+  try {
+    const uid = firebase.auth().currentUser.uid;
+
+    const snapshot = yield firebase.database().ref().child(`/user-lists/${uid}`).orderByChild('id').equalTo(action.payload.list_id).once('value');
+
+    let listKey = null;
+    snapshot.forEach(data => listKey = data.key);
+
+    const updates = {};
+    updates['/lists/' + listKey] = null;
+    updates['/user-lists/' + uid + '/' + listKey] = null;
+
+    firebase.database().ref().update(updates);
+  } catch (err) {
+    console.tron.log('Error: ' + JSON.stringify(err.message));
+  }
+}
+
+export function* updateList(action) {
+  try {
+    const listData = yield select(getList, action.payload.list_id);
+    const uid = firebase.auth().currentUser.uid;
+
+    const snapshot = yield firebase.database().ref().child(`/user-lists/${uid}`).orderByChild('id').equalTo(action.payload.list_id).once('value');
+
+    let listKey = null;
+    snapshot.forEach(data => listKey = data.key);
+
+    const updates = {};
+    updates['/lists/' + listKey] = listData;
+    updates['/user-lists/' + uid + '/' + listKey] = listData;
+
+    firebase.database().ref().update(updates);
+  } catch (err) {
+    console.tron.log('Error: ' + JSON.stringify(err.message));
+  }
+}
+
 export default function* root() {
   yield all([
     takeLatest(leapActions.GET_API_CALL, leapApiCall),
@@ -77,5 +134,11 @@ export default function* root() {
     takeLatest(leapActions.AUTH_LOGOUT, logoutUser),
     takeLatest(leapActions.AUTH_LOGIN, loginUser),
     takeLatest(leapActions.AUTH_CREATE_ACCOUNT, createAccount),
+    takeEvery(leapActions.ADD_LIST, addList),
+    takeEvery(leapActions.REMOVE_LIST, deleteList),
+    takeLatest([
+      leapActions.LIST_CHANGE_TITLE,
+      ...Object.values(leapTaskActions)
+    ], updateList),
   ]);
 }
