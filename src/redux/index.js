@@ -4,6 +4,7 @@ import rootSaga from '../saga';
 import configureStore from './configureStore';
 import { navReducer } from './reducers/nav';
 import { userReducer } from './reducers/user';
+import {  remoteListReducer} from './reducers/remote';
 
 import { generateListId, generateTaskId, generateTaskImageId } from '../utils';
 
@@ -213,7 +214,8 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
 export const appReducer = combineReducers({
   nav: navReducer,
   user: userReducer,
-  leap: leapReducer
+  leap: leapReducer,
+  remoteList: remoteListReducer
 });
 
 export default configureStore(appReducer, rootSaga);

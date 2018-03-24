@@ -1,4 +1,5 @@
 import { MainNavigator } from '../../navigators';
+import { NavigationActions } from 'react-navigation';
 
 import { NAVIGATE_TO_CONTENT, AUTH_CHECK_AUTH_SUCCESS, AUTH_CHECK_AUTH_FAILURE } from '../actions';
 
@@ -10,6 +11,12 @@ export const navReducer = (state = initialNavState, action) => {
   switch (action.type) {
     case NAVIGATE_TO_CONTENT:
     case AUTH_CHECK_AUTH_SUCCESS:
+      // let navAction = NavigationActions.reset({
+      //   index: 0,
+      //   actions: [
+      //     MainNavigator.router.getActionForPathAndParams('Content')
+      //   ]
+      // });
       nextState = MainNavigator.router.getStateForAction(MainNavigator.router.getActionForPathAndParams('Content'), state);
       break;
     case AUTH_CHECK_AUTH_FAILURE:

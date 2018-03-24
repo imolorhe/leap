@@ -11,7 +11,7 @@ export class App extends Component {
     return (
       <Provider store={configureStore.store} >
         <PersistGate persistor={configureStore.persistor}>
-          <AppNavigator getNavigationProp={configureStore.getNavigationProp} />
+          <AppNavigator getNavigationProp={configureStore.getNavigationProp} store={configureStore.store} />
         </PersistGate>
       </Provider>
     );

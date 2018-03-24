@@ -1,7 +1,7 @@
 import { all, takeLatest, put, call, takeEvery, select } from 'redux-saga/effects';
 import firebase from 'react-native-firebase';
 import * as leapActions from '../redux/actions';
-import * as leapTaskActions from '../redux/actions/task';
+import * as leapTaskActions from '../redux/actions/task/constants';
 import { getList } from '../redux/selectors';
 
 export function* leapApiCall() {
@@ -59,7 +59,7 @@ export function* loginUser(action) {
       yield call(checkAuth);
     }
   } catch (err) {
-    console.tron.log('Signin error: ' + JSON.stringify(err.message));
+    console.tron.error('Signin error: ' + JSON.stringify(err.message));
   }
 }
 
@@ -68,7 +68,7 @@ export function* logoutUser() {
     const signout = yield call(() => firebase.auth().signOut());
     yield call(checkAuth);
   } catch (err) {
-    console.tron.log('Signout error: ' + JSON.stringify(err.message));
+    console.tron.error('Signout error: ' + JSON.stringify(err.message));
   }
 }
 
@@ -84,7 +84,7 @@ export function* addList(action) {
     firebase.database().ref().update(updates);
 
   } catch (err) {
-    console.tron.log('Error: ' + JSON.stringify(err.message));
+    console.tron.error('Add list Error: ' + JSON.stringify(err.message));
   }
 }
 
@@ -103,7 +103,7 @@ export function* deleteList(action) {
 
     firebase.database().ref().update(updates);
   } catch (err) {
-    console.tron.log('Error: ' + JSON.stringify(err.message));
+    console.tron.error('Delete list Error: ' + JSON.stringify(err.message));
   }
 }
 
@@ -123,7 +123,20 @@ export function* updateList(action) {
 
     firebase.database().ref().update(updates);
   } catch (err) {
-    console.tron.log('Error: ' + JSON.stringify(err.message));
+    console.tron.error('Update list Error: ' + JSON.stringify(err.message));
+  }
+}
+
+export function* fetchRemoteList(action) {
+  try {
+    const snapshot = yield firebase.database().ref().child(`/lists`).orderByChild('id').equalTo(action.payload.list_id).once('value');
+
+    const list = Object.values(snapshot.val())[0];
+    console.tron.log(JSON.stringify(list));
+
+    yield put({ type: leapActions.REMOTE_GET_LIST_SUCCESS, payload: { list } });
+  } catch (err) {
+    console.tron.error('Fetch remote list Error: ' + JSON.stringify(err.message));
   }
 }
 
@@ -140,5 +153,6 @@ export default function* root() {
       leapActions.LIST_CHANGE_TITLE,
       ...Object.values(leapTaskActions)
     ], updateList),
+    takeLatest(leapActions.REMOTE_GET_LIST, fetchRemoteList),
   ]);
 }

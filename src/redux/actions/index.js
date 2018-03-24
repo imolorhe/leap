@@ -23,6 +23,10 @@ export const AUTH_CREATE_ACCOUNT = 'AUTH_CREATE_ACCOUNT';
 
 export const NAVIGATE_TO_CONTENT = 'NAVIGATE_TO_CONTENT';
 
+export const REMOTE_GET_LIST = 'REMOTE_GET_LIST';
+export const REMOTE_GET_LIST_SUCCESS = 'REMOTE_GET_LIST_SUCCESS';
+export const REMOTE_GET_LIST_FAILURE = 'REMOTE_GET_LIST_FAILURE';
+
 export const addElement = createAction(ADD_ELEMENT);
 export const removeElement = createAction(REMOVE_ELEMENT);
 
@@ -39,3 +43,5 @@ export const logoutUser = createAction(AUTH_LOGOUT);
 export const createAccount = createAction(AUTH_CREATE_ACCOUNT);
 
 export const goToContent = createAction(NAVIGATE_TO_CONTENT);
+
+export const getRemoteList = createAction(REMOTE_GET_LIST);

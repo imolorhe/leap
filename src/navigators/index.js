@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Animated, BackHandler } from 'react-native';
+import { Animated, BackHandler, Linking } from 'react-native';
 import { TabNavigator, StackNavigator, NavigationActions, SwitchNavigator } from 'react-navigation';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -7,6 +7,8 @@ import Ionicon from 'react-native-vector-icons/Ionicons';
 
 import configureStore from '../redux';
 import { checkAuth } from '../redux/actions';
+
+import LinkRoutes from './linkroute';
 
 import AddNewScreen from '../screens/AddNewScreen/AddNewScreen';
 import AnimationsScreen from '../screens/AnimationsScreen/AnimationsScreen';
@@ -74,9 +76,14 @@ export class AppNavigator extends Component {
   }
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", this.onBackPress);
+
+    Linking.addEventListener('url', event => this.handleOpenURL(event.url));
+    Linking.getInitialURL().then(url => url && this.handleOpenURL(url));
   }
   componentWillUnmount() {
     BackHandler.removeEventListener("hardwareBackPress", this.onBackPress);
+
+    Linking.removeEventListener('url', this.handleOpenURL);
   }
   onBackPress = () => {
     const { dispatch, navState } = this.props;
@@ -86,6 +93,12 @@ export class AppNavigator extends Component {
     dispatch(NavigationActions.back());
     return true;
   };
+
+  handleOpenURL = (url) => {
+    const path = url.split(':/')[1];
+    LinkRoutes(path, this.props.store);
+  };
+
   render() {
     return (
       <MainNavigator navigation={this.props.getNavigationProp(this.props.dispatch, this.props.navState)} />

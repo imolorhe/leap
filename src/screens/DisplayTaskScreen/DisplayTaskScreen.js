@@ -6,7 +6,7 @@ import { showImagePicker } from 'react-native-image-picker';
 
 import { getInitialTaskImageState } from '../../redux';
 import { changeTaskTitle, setTaskContacts, addTaskImage, removeTaskImage, setTaskDescription } from '../../redux/actions';
-import { getTask } from '../../redux/selectors';
+import { getTask, selectRemoteTask } from '../../redux/selectors';
 
 import NewItemInput from '../../components/NewItemInput';
 
@@ -31,10 +31,12 @@ class DisplayTaskScreen extends Component {
     // Get the task matching the ID passed to the route
     this.listId = this.props.navigation.state.params.listId;
     this.taskId = this.props.navigation.state.params.taskId;
+
+    this.isRemote = this.props.navigation.state.params.remote;
   }
   componentDidMount() {
     const task = getTask(this.props.state, this.listId, this.taskId);
-    this.setState({ editedDescription: task.description });
+    this.setState({ editedDescription: task && task.description });
   }
 
   goBack = () => this.props.navigation.goBack();
@@ -81,7 +83,8 @@ class DisplayTaskScreen extends Component {
   onTaskTitleChange = text => this.props.changeTaskTitle({ task_id: this.taskId, list_id: this.listId, text });
   render() {
 
-    const task = getTask(this.props.state, this.listId, this.taskId);
+    const task = this.isRemote ? selectRemoteTask(this.props.state, this.listId, this.taskId) : getTask(this.props.state, this.listId, this.taskId);
+
     return (
       <SafeAreaView style={styles.container}>
         <View>
@@ -92,7 +95,7 @@ class DisplayTaskScreen extends Component {
               </TouchableOpacity>
               <TextInput style={{ fontSize: 30 }}
                 onChangeText={this.onTaskTitleChange}
-                value={task.title}/>
+                value={task && task.title}/>
             </View>
           </View>
         </View>
@@ -102,7 +105,7 @@ class DisplayTaskScreen extends Component {
             {this.state.isEditingDescription ?
               <TouchableOpacity onPress={this.saveDescription}>
                 <Text>Save</Text>
-              </TouchableOpacity> :
+              </TouchableOpacity> : this.isRemote ? null :
               <TouchableOpacity onPress={this.editDescription}>
                 <FeatherIcon name='edit' size={20} />
               </TouchableOpacity>
@@ -115,17 +118,19 @@ class DisplayTaskScreen extends Component {
                 onChangeText={this.onSetEditedDescription}
                 multiline={true}
                 placeholder='Write the task description...' />
-            : <Text>{task.description}</Text>
+            : <Text>{task && task.description}</Text>
             }
           </View>
           <SectionHeader>
             <Text style={{ fontSize: 20 }}>Images</Text>
-            <TouchableOpacity onPress={this.toggleManageImages}>
-              <FeatherIcon name='more-horizontal' size={20} />
-            </TouchableOpacity>
+            { this.isRemote ? null :
+              <TouchableOpacity onPress={this.toggleManageImages}>
+                <FeatherIcon name='more-horizontal' size={20} />
+              </TouchableOpacity>
+            }
           </SectionHeader>
           <View style={{ padding: 20, flexDirection: 'row' }}>
-            {task.images.map((image, i) => (
+            {task && task.images && task.images.map((image, i) => (
               <View key={i} style={styles.taskImageContainer}>
                 {this.state.isManagingImages &&
                   <TouchableOpacity style={{ position: 'absolute', right: 5, top: 5, zIndex: 1 }} onPress={this.removeImage(image.id)}>
@@ -143,12 +148,14 @@ class DisplayTaskScreen extends Component {
           </View>
           <SectionHeader>
             <Text style={{ fontSize: 20 }}>People</Text>
-            <TouchableOpacity onPress={this.showContactModal}>
-              <FeatherIcon name='more-horizontal' size={20} />
-            </TouchableOpacity>
+            {this.isRemote ? null :
+              <TouchableOpacity onPress={this.showContactModal}>
+                <FeatherIcon name='more-horizontal' size={20} />
+              </TouchableOpacity>
+            }
           </SectionHeader>
           <View style={{ padding: 20 }}>
-            {task.people.map((contact, i) => (
+            {task && task.people && task.people.map((contact, i) => (
               <View key={i} style={{ padding: 10 }}>
                 <Text>{contact.givenName} {contact.familyName}</Text>
               </View>
