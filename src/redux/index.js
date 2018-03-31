@@ -160,7 +160,7 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
           if (list.id === payload.list_id) {
             list.tasks = list.tasks.map(task => {
               if (task.id === payload.task_id) {
-                task.images = [...task.images, payload.image ];
+                task.images = [...(task.images || []), payload.image ];
               }
               return task;
             })
@@ -206,7 +206,8 @@ export const leapReducer = (state = INITIAL_STATE, action) => {
     case FETCH_USER_LISTS_FAILURE:
       return {
         ...state,
-        loading: false
+        loading: false,
+        lists: []
       };
     case FETCH_USER_LISTS_SUCCESS:
       return {

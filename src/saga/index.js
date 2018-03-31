@@ -75,6 +75,9 @@ export function* logoutUser() {
 export function* fetchUserLists() {
   try {
     const uid = firebase.auth().currentUser.uid;
+    if (!uid) {
+      throw new Error('User is not authenticated.');
+    }
     const snapshot = yield firebase.database().ref().child(`/user-lists/${uid}`).once('value');
 
     const lists = Object.values(snapshot.val());
@@ -90,6 +93,9 @@ export function* fetchUserLists() {
 export function* addList(action) {
   try {
     const uid = firebase.auth().currentUser.uid;
+    if (!uid) {
+      throw new Error('User is not authenticated.');
+    }
     const newListKey = firebase.database().ref().child('lists').push().key;
 
     const updates = {};
@@ -107,6 +113,9 @@ export function* deleteList(action) {
   try {
     const uid = firebase.auth().currentUser.uid;
 
+    if (!uid) {
+      throw new Error('User is not authenticated.');
+    }
     const snapshot = yield firebase.database().ref().child(`/user-lists/${uid}`).orderByChild('id').equalTo(action.payload.list_id).once('value');
 
     let listKey = null;
@@ -127,6 +136,9 @@ export function* updateList(action) {
     const listData = yield select(getList, action.payload.list_id);
     const uid = firebase.auth().currentUser.uid;
 
+    if (!uid) {
+      throw new Error('User is not authenticated.');
+    }
     const snapshot = yield firebase.database().ref().child(`/user-lists/${uid}`).orderByChild('id').equalTo(action.payload.list_id).once('value');
 
     let listKey = null;
